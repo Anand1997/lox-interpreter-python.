@@ -3,6 +3,8 @@ import sys
 TOKEN_DIC = {
     '(' : "LEFT_PAREN",
     ')' : "RIGHT_PAREN",
+    '{' : "LEFT_BRAC",
+    '}' : "RIGHT_BRACE" 
 }
 
 def main():
