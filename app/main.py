@@ -13,6 +13,21 @@ TOKEN_DIC = {
     '*' : "STAR",
 }
 
+def parse_file(token_dic, file_contents):
+    bError = False
+    nLineNo = 1
+    for ch in file_contents:
+        if ch == '\n':
+            nLineNo = nLineNo + 1
+            continue
+        if ch not in token_dic:
+            print("[line {0}] Error: Unexpected character: {1}".format(nLineNo, ch), file=sys.stderr)
+            bError = True
+            continue
+        print( TOKEN_DIC[ch] + " " + ch + " null" )
+    print("EOF  null")
+    return bError
+
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
@@ -31,9 +46,8 @@ def main():
     with open(filename) as file:
         file_contents = file.read()
     
-    for c in file_contents:
-        print ( TOKEN_DIC[c] + " " + c + " null" )
-    print("EOF  null")
+    if parse_file(token_dic=TOKEN_DIC,file_contents=file_contents):
+        exit(65)
 
 if __name__ == "__main__":
     main()
