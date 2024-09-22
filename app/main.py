@@ -2,7 +2,7 @@ import sys
 
 TOKEN_DIC = {
     '(' : "LEFT_PAREN",
-    ')' : "RIGHT_PARAN",
+    ')' : "RIGHT_PAREN",
 }
 
 def main():
