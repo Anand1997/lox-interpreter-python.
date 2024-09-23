@@ -133,8 +133,7 @@ class Scanner:
             return
         # invisible char ( ignore them )
         if char in {' ','\r','\t'}:
-            return
-        
+            return       
         # strings
         if char == '"':
             while (self.peek() != '"') and (not self.isAtEnd()):
@@ -149,13 +148,32 @@ class Scanner:
             self.advance() # closing '"'
             self.addToken(eToken.STRING, self.__src_str[self.__nStart + 1 : self.__nCurrent - 1])
             return
-
+        # digit
+        if char.isdigit():
+            self.number()
+            return
         # single char token
         if char in eToken._value2member_map_:
             self.addToken(eToken(char))
         else:
             ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
     
+
+    def number(self) -> None:
+        while(self.peek().isdigit()):
+            self.advance()
+        if self.peek() == '.' and self.peekNext().isdigit():
+            self.advance() # eat '.'
+            while(self.peek().isdigit()):
+                self.advance()
+        self.addToken(eToken.NUMBER, float(self.__src_str[self.__nStart:self.__nCurrent]))
+
+
+    def peekNext(self) -> str:
+        if self.__nCurrent + 1 >= len(self.__src_str):
+            return '\0'
+        return self.__src_str[self.__nCurrent + 1]
+
     def peek(self) -> str:
         if self.isAtEnd():
             return '\0'
