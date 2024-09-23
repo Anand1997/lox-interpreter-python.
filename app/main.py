@@ -1,32 +1,41 @@
 import sys
+import os
+from app.Scanner import Scanner, hasError
 
-TOKEN_DIC = {
-    '(' : "LEFT_PAREN",
-    ')' : "RIGHT_PAREN",
-    '{' : "LEFT_BRACE",
-    '}' : "RIGHT_BRACE",
-    ',' : "COMMA",
-    '.' : "DOT",
-    '-' : "MINUS",
-    '+' : "PLUS",
-    ';' : "SEMICOLON",
-    '*' : "STAR",
-}
+# global const
+PROMPT = ">> "
 
-def parse_file(token_dic, file_contents):
-    bError = False
-    nLineNo = 1
-    for ch in file_contents:
-        if ch == '\n':
-            nLineNo = nLineNo + 1
-            continue
-        if ch not in token_dic:
-            print("[line {0}] Error: Unexpected character: {1}".format(nLineNo, ch), file=sys.stderr)
-            bError = True
-            continue
-        print( TOKEN_DIC[ch] + " " + ch + " null" )
-    print("EOF  null")
-    return bError
+# TODO set-up signal handling ( Ctrl+D , Ctrl+Z)
+
+# set-up argument parser
+# TODO Add verbos and other flags in future
+# gobjParser = argparse.ArgumentParser(description="Process some files.")
+# gobjParser.add_argument('filename', nargs='?', default=None,type=str, help="Input src file")
+
+def run(src_str : str) -> None:
+    objScanner = Scanner(src_str)
+    lToken = objScanner.scanTokens()
+    if lToken is None:
+        raise ValueError('> Failed to Scan the file.')
+    for token in lToken:
+        print(token)
+
+def runFile(src_file : str) -> None:
+    if not os.path.isfile(src_file):
+        raise ValueError('> Invalid src file.')
+    sSrcFileAbsPath = os.path.abspath(src_file)
+    # print(">> Scanning stared for {0}".format(sSrcFileAbsPath)) 
+    with open(sSrcFileAbsPath) as file:
+        file_contents = file.read()
+    run(file_contents)
+
+def runPrompt():
+    try:
+        while True:
+            sLine = input(PROMPT)
+            run(sLine)
+    except EOFError:
+        print("\nEOD detected. Exiting the REPL.")
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -43,10 +52,10 @@ def main():
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
-    with open(filename) as file:
-        file_contents = file.read()
-    
-    if parse_file(token_dic=TOKEN_DIC,file_contents=file_contents):
+    # with open(filename) as file:
+    #     file_contents = file.read()
+    runFile(filename)
+    if hasError():
         exit(65)
 
 if __name__ == "__main__":
