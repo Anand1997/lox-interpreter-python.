@@ -134,6 +134,22 @@ class Scanner:
         # invisible char ( ignore them )
         if char in {' ','\r','\t'}:
             return
+        
+        # strings
+        if char == '"':
+            while (self.peek() != '"') and (not self.isAtEnd()):
+                if self.peek() == '\n': # support multi line string
+                    self.__nCurrentLine = self.__nCurrentLine + 1
+                self.advance() # this will return each character of string
+            
+            if self.isAtEnd():
+                ErrorHandler.error(self.__nCurrentLine, "Unterminated string.")
+                return
+            
+            self.advance() # closing '"'
+            self.addToken(eToken.STRING, self.__src_str[self.__nStart + 1 : self.__nCurrent - 1])
+            return
+
         # single char token
         if char in eToken._value2member_map_:
             self.addToken(eToken(char))
