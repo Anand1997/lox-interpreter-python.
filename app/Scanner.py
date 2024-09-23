@@ -118,16 +118,32 @@ class Scanner:
         if char == '\n':
             self.__nCurrentLine = self.__nCurrentLine + 1
             return
-
+        # double char token
         if char in {'!','=','>','<'}:
             self.addToken(eToken( char + "=" if self.match("=") else char))
             return
-
+        # division or comment
+        if char == '/':
+            if self.match('/'):
+                # commnt
+                while (self.peek() != '\n') and (not self.isAtEnd()):
+                    self.advance()
+            else:
+                self.addToken(eToken(char)) # division operator
+            return
+        # invisible char ( ignore them )
+        if char in {' ','\r','\t'}:
+            return
+        # single char token
         if char in eToken._value2member_map_:
             self.addToken(eToken(char))
         else:
             ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
     
+    def peek(self) -> str:
+        if self.isAtEnd():
+            return '\0'
+        return self.__src_str[self.__nCurrent]
 
     def match(self, expected : str) -> bool:
         if (self.isAtEnd() or self.__src_str[self.__nCurrent] != expected) :
