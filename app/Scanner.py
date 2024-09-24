@@ -46,6 +46,8 @@ class Scanner:
         if self.__scanTokenString(char)        : return # strings , FIXME this can set error bit 
         if self.__scanTokenDigit(char)         : return # digit
         if self.__scanTokenSingleChar(char)    : return # single char token
+        if self.__scanTokenIdentifier(char)    : return
+        if self.__scanReservedWords(char)      : return
         ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
     
     def __scanTokenInvisibleChar(self, currentChar : str) -> bool:
@@ -92,7 +94,16 @@ class Scanner:
             self.number()
             return True
         return False
-
+    
+    # maximal munch
+    def __scanTokenIdentifier(self,currentChar : str) -> bool:
+        if currentChar.isalpha()  or currentChar == '_':
+            self.identifier()
+            return True
+        return False
+    
+    def __scanReservedWords(self,currentChar : str) -> bool:
+        return False
 
     def number(self) -> None:
         while(self.peek().isdigit()):
@@ -102,6 +113,11 @@ class Scanner:
             while(self.peek().isdigit()):
                 self.advance()
         self.addToken(eToken.NUMBER, float(self.__src_str[self.__nStart:self.__nCurrent]))
+
+    def identifier(self) -> None:
+        while self.peek().isalnum() or self.peek() == '_':
+            self.advance()
+        self.addToken(eToken.IDENTIFIER)
 
     def __scanTokenSingleChar(self, currentChar : str) -> bool:
         if currentChar in eToken._value2member_map_:
