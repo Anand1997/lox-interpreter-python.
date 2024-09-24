@@ -115,7 +115,7 @@ class Scanner:
             self.advance()
         sCurrentToken = self.__src_str[self.__nStart : self.__nCurrent]
         if sCurrentToken in eToken._value2member_map_:
-            self.addToken(eToken(sCurrentToken), sCurrentToken)
+            self.addToken(eToken(sCurrentToken))
         else:
             self.addToken(eToken.IDENTIFIER)
 
