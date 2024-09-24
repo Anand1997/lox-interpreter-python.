@@ -1,57 +1,5 @@
-from enum import Enum
 from sys import stderr
-
-class eToken(Enum):
-    # Single-character token
-    LEFT_PAREN   = '('
-    RIGHT_PAREN  = ')'
-    LEFT_BRACE   = '{'
-    RIGHT_BRACE  = '}'
-    COMMA        = ','
-    DOT          = '.'
-    MINUS        = '-'
-    PLUS         = '+'
-    SEMICOLON    = ';'
-    SLASH        = '/'
-    STAR         = '*'
-
-    # One or two char tokens
-    BANG         = '!'
-    BANG_EQUAL   = '!='
-    EQUAL        = '='
-    EQUAL_EQUAL  = '=='
-    GREATER      = '>'
-    GREATER_EQUAL = '>='
-    LESS          = '<'
-    LESS_EQUAL    = '<='
-    
-    # Literals
-    IDENTIFIER  = "IDF"
-    STRING      = "STR"
-    NUMBER      = "NUM"
-
-    # Keywords
-    AND         = "and"
-    CLASS       = "class"
-    ELSE        = "else"
-    FALSE       = "false"
-    FUN         = "fun"
-    FOR         = "for"
-    IF          = "if"
-    NIL         = "nil"
-    OR          = "or"
-    PRINT       = "print"
-    RETURN      = "return"
-    SUPER       = "super"
-    THIS        = "this"
-    TRUE        = "true"
-    VAR         = "var"
-    WHILE       = "while"
-
-    # special tokens
-    EOF         = 'EOF'
-    INVALID     = 'INV'
-
+from app.Token import eToken, Token
 
 bHasError = False
 
@@ -71,32 +19,6 @@ class ErrorHandler:
         return "[line {0}] Error: {1}{2}".format(str(nLine),
                                                    sWhere,
                                                    sMessage)
-
-class Token:
-    def __init__(self) -> None:
-        self.eType : eToken = eToken.INVALID
-        self.sLexeme : str = None
-        self.objLiteral : object = None
-        self.nLine : int = 0
-
-    def __init__(self, eType : eToken, 
-                 sLexeme : str,
-                 objLiteral : object,
-                 nLine : int) -> None:
-        self.eType : eToken = eType
-        self.sLexeme : str = sLexeme
-        self.objLiteral : object = objLiteral
-        self.nLine : int = nLine
-    
-    def __str__(self) -> str:
-        if self.objLiteral is None:
-            sLitral = "null"
-        else:
-            sLitral = str(self.objLiteral)
-        return "{0} {1} {2}".format(self.eType.name , 
-                                    self.sLexeme, 
-                                    sLitral)
-    
 
 class Scanner:
     def __init__(self, src_str : str) -> None:
@@ -118,46 +40,59 @@ class Scanner:
         if char == '\n':
             self.__nCurrentLine = self.__nCurrentLine + 1
             return
+        if self.__scanTokenInvisibleChar(char) : return # skip invisible char        
+        if self.__scanTokenDoubleChar(char)    : return
+        if self.__scanTokenBackSlash(char)     : return # division or comment
+        if self.__scanTokenString(char)        : return # strings , FIXME this can set error bit 
+        if self.__scanTokenDigit(char)         : return # digit
+        if self.__scanTokenSingleChar(char)    : return # single char token
+        ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
+    
+    def __scanTokenInvisibleChar(self, currentChar : str) -> bool:
+        if currentChar in {' ','\r','\t'} :
+            return True
+        return False
+
+    def __scanTokenDoubleChar(self, currentChar : str) -> bool: 
         # double char token
-        if char in {'!','=','>','<'}:
-            self.addToken(eToken( char + "=" if self.match("=") else char))
-            return
-        # division or comment
-        if char == '/':
+        if currentChar in {'!','=','>','<'}:
+            self.addToken(eToken( currentChar + "=" if self.match("=") else currentChar))
+            return True
+        return False
+
+    def __scanTokenBackSlash(self, currentChar : str) -> bool:
+        if currentChar == '/':
             if self.match('/'):
                 # commnt
                 while (self.peek() != '\n') and (not self.isAtEnd()):
                     self.advance()
             else:
-                self.addToken(eToken(char)) # division operator
-            return
-        # invisible char ( ignore them )
-        if char in {' ','\r','\t'}:
-            return       
-        # strings
-        if char == '"':
+                self.addToken(eToken(currentChar)) # division operator
+            return True
+        return False
+
+
+    def __scanTokenString(self, currentChar : str) -> bool:
+        if currentChar == '"':
+            # start scanning for string
             while (self.peek() != '"') and (not self.isAtEnd()):
                 if self.peek() == '\n': # support multi line string
                     self.__nCurrentLine = self.__nCurrentLine + 1
                 self.advance() # this will return each character of string
-            
             if self.isAtEnd():
                 ErrorHandler.error(self.__nCurrentLine, "Unterminated string.")
-                return
-            
-            self.advance() # closing '"'
+                return True # FIXME verify this 
+            self.advance()  # closing '"'
             self.addToken(eToken.STRING, self.__src_str[self.__nStart + 1 : self.__nCurrent - 1])
-            return
-        # digit
-        if char.isdigit():
+            return True
+        return False
+
+    def __scanTokenDigit(self, currentChar : str) -> bool:
+        if currentChar.isdigit():
             self.number()
-            return
-        # single char token
-        if char in eToken._value2member_map_:
-            self.addToken(eToken(char))
-        else:
-            ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
-    
+            return True
+        return False
+
 
     def number(self) -> None:
         while(self.peek().isdigit()):
@@ -168,6 +103,11 @@ class Scanner:
                 self.advance()
         self.addToken(eToken.NUMBER, float(self.__src_str[self.__nStart:self.__nCurrent]))
 
+    def __scanTokenSingleChar(self, currentChar : str) -> bool:
+        if currentChar in eToken._value2member_map_:
+            self.addToken(eToken(currentChar))
+            return True
+        return False
 
     def peekNext(self) -> str:
         if self.__nCurrent + 1 >= len(self.__src_str):
