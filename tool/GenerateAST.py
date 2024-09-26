@@ -27,7 +27,7 @@ def addImports(writer):
 
 def addAbstractClasses(writer, sBaseClass : str, lElementName : list[str]):
     writer("# Base class")
-    writer("class {0}(ABCMeta):".format(sBaseClass))
+    writer("class {0}(metaclass=ABCMeta):".format(sBaseClass))
     writer("    @abstractmethod")
     writer("    def accept(self, visitor):")
     writer("        raise NotImplemented('ERROR : Not implimented !')")
@@ -52,7 +52,7 @@ def addConcreteElement(writer, sBaseClass : str , sType : list):
             writer("       self.{0} = {0}".format(member))
         writer("")
         writer("    def accept(self, visitor):")
-        writer("        visitor.visit{0}(self)".format(childClass))
+        writer("        return visitor.visit{0}(self)".format(childClass))
         writer(" ")
         writer(" ")
 
