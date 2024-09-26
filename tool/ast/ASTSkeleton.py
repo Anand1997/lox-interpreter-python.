@@ -1,16 +1,17 @@
 # This is an Auto Generated file #
+# FIXME : [1] Make this code typesafe
 from abc import ABCMeta, abstractmethod
 from app.Token import Token, eToken
 
 
 # Base class
-class Expr(ABCMeta):
+class Expr(metaclass=ABCMeta):
     @abstractmethod
     def accept(self, visitor):
         raise NotImplemented('ERROR : Not implimented !')
 
 # visitor class
-class visitor(ABCMeta):
+class visitor(metaclass=ABCMeta):
     @abstractmethod
     def visitBinary(self, element):
         raise NotImplemented('ERROR : Not implimented !')
@@ -32,7 +33,7 @@ class Binary(Expr):
        self.right = right
 
     def accept(self, visitor):
-        visitor.visitBinary(self)
+        return visitor.visitBinary(self)
  
  
 # Class Grouping - expression : Expr
@@ -41,7 +42,7 @@ class Grouping(Expr):
        self.expression = expression
 
     def accept(self, visitor):
-        visitor.visitGrouping(self)
+        return visitor.visitGrouping(self)
  
  
 # Class Literal  - value : object
@@ -50,7 +51,7 @@ class Literal(Expr):
        self.value = value
 
     def accept(self, visitor):
-        visitor.visitLiteral(self)
+        return visitor.visitLiteral(self)
  
  
 # Class Unary    - operator : Token, right : Expr
@@ -60,7 +61,7 @@ class Unary(Expr):
        self.right = right
 
     def accept(self, visitor):
-        visitor.visitUnary(self)
+        return visitor.visitUnary(self)
  
  
 # END OF FILE

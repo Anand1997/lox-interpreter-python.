@@ -34,7 +34,7 @@ def addAbstractClasses(writer, sBaseClass : str, lElementName : list[str]):
     writer("")
 
     writer("# visitor class")
-    writer("class visitor(ABCMeta):")
+    writer("class visitor(metaclass=ABCMeta):")
     writer("    @abstractmethod")
     for element in lElementName:
         writer("    def visit{0}(self, element):".format(element))
