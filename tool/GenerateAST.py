@@ -16,6 +16,7 @@ def createDir(sDirPath : str ) -> Path:
 
 def addHeader(writer):
     writer("# This is an Auto Generated file #")
+    writer("# FIXME : [1] Make this code typesafe")
 
 
 def addImports(writer):
@@ -55,7 +56,7 @@ def addConcreteElement(writer, sBaseClass : str , sType : list):
         writer(" ")
         writer(" ")
 
-def defineAST(sDirPath : str , sBaseClass : str, lElement : list[str]):
+def defineASTSkeleton(sDirPath : str , sBaseClass : str, lElement : list[str]):
     lElementName = [s.split("-")[0].strip() for s in lElement ]
     path = createDir(sDirPath=sDirPath)
     file_path = path / "ASTSkeleton.py"
@@ -78,12 +79,14 @@ def main():
         exit(65)
     sOutputDir = sys.argv[1]
 
-    defineAST(sOutputDir,"Expr",[
+    defineASTSkeleton(sOutputDir,"Expr",[
         "Binary   - left : Expr, operator : Token, right : Expr",
         "Grouping - expression : Expr",
         "Literal  - value : object",
         "Unary    - operator : Token, right : Expr"
     ])
+
+    # TODO : Automate the creation of the visitor implementation
 
 if __name__ == "__main__":
     main()
