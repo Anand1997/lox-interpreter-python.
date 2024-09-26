@@ -14,32 +14,59 @@ def createDir(sDirPath : str ) -> Path:
     path.mkdir(parents=True, exist_ok=True)
     return path
 
+def addHeader(writer):
+    writer("# This is an Auto Generated file #")
 
-def defineAST(sDirPath : str , sBaseClass : str, lTypes : list[str]):
-    path = createDir(sDirPath=sDirPath)
-    file_path = path / "AST.py"
-    file_path.touch()
-    file = open(file_path,"w")
-    writer = lambda x : print(x,file=file)
-    writer("# This is an Auto Generated file")
+
+def addImports(writer):
+    writer("from abc import ABCMeta, abstractmethod")
     writer("from app.Token import eToken")
     writer("")
-    writer("# Base class")
-    writer("class {0}:".format(sBaseClass))
-    writer("    pass")
     writer("")
-    for sType in lTypes:
+
+def addAbstractClasses(writer, sBaseClass : str, lElementName : list[str]):
+    writer("# Base class")
+    writer("class {0}(ABCMeta):".format(sBaseClass))
+    writer("    @abstractmethod")
+    writer("    def accept(self, visitor):")
+    writer("        raise NotImplemented('ERROR : Not implimented !')")
+    writer("")
+
+    writer("# visitor class")
+    writer("class visitor(ABCMeta):")
+    writer("    @abstractmethod")
+    for element in lElementName:
+        writer("    def visit{0}(self, element):".format(element))
+        writer("        raise NotImplemented('ERROR : Not implimented !')")
+        writer("")
+
+def addConcreteElement(writer, sBaseClass : str , sType : list):
         childClass, classMembersWithType = sType.split('-')
         childClass = childClass.strip()
         classMemberName = [s.split(':')[0].strip() for s in classMembersWithType.split(',')]
-
         writer("# Class {0}".format(sType))
-        writer("class {0}:".format(childClass))
+        writer("class {0}({1}):".format(childClass, sBaseClass))
         writer("    def __init__( self,{0} ) -> None:".format(classMembersWithType))
         for member in classMemberName:
             writer("       self.{0} = {0}".format(member))
         writer("")
-        writer("")
+        writer("    def accept(self, visitor):")
+        writer("        visitor.visit{0}(self)".format(childClass))
+        writer(" ")
+        writer(" ")
+
+def defineAST(sDirPath : str , sBaseClass : str, lElement : list[str]):
+    lElementName = [s.split("-")[0].strip() for s in lElement ]
+    path = createDir(sDirPath=sDirPath)
+    file_path = path / "ASTSkeleton.py"
+    file_path.touch()
+    file = open(file_path,"w")
+    writer = lambda x : print(x,file=file)
+    addHeader(writer)
+    addImports(writer)
+    addAbstractClasses(writer, sBaseClass, lElementName)
+    for sType in lElement:
+        addConcreteElement(writer, sBaseClass, sType)
     writer("# END OF FILE")
     file.close()
 
