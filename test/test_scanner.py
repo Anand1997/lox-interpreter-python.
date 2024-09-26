@@ -12,7 +12,7 @@ gobjASTPrinter = ASTPrinter()
 gTokenStar  = Token(eToken.STAR, "*", None, 1)
 gTokenMinus = Token(eToken.MINUS,"-",None,1)
 glit123 = Literal(123)
-glit45_65 = Literal(45.65)
+glit45_65 = Literal(45.67)
 gobjUnaryExp = Unary(gTokenMinus, glit123)
 gGrouping = Grouping(glit45_65) 
 
@@ -33,7 +33,7 @@ def test_UT_LitralPrint():
 
 def test_UT_visitUnary():
     print_caller_info()
-    assert "-1" == gobjASTPrinter.print(gobjUnaryExp)
+    assert "(- 123)" == gobjASTPrinter.print(gobjUnaryExp)
 
 def test_IT_ASTPrint():
     print_caller_info()

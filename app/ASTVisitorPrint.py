@@ -10,11 +10,12 @@ class ASTPrinter(visitor):
 
     def parenthesize(self,name : str , *exprs):
         sAns = ""
-        sAns = sAns + "("
+        sAns = sAns + "(" + name
         for expr in exprs:
             sAns = sAns + " "
             sAns = sAns + expr.accept(self)
         sAns = sAns + ")"
+        return sAns
     
     def visitBinary(self, element):
         return self.parenthesize(element.operator.sLexeme,
@@ -24,7 +25,7 @@ class ASTPrinter(visitor):
         return self.parenthesize("group", element.expression)
 
     def visitLiteral(self, element):
-        return element.value # str(element.value)
+        return str(element.value)
 
     def visitUnary(self, element):
         return self.parenthesize(element.operator.sLexeme, element.right)
