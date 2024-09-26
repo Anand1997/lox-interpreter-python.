@@ -20,7 +20,7 @@ def addHeader(writer):
 
 def addImports(writer):
     writer("from abc import ABCMeta, abstractmethod")
-    writer("from app.Token import eToken")
+    writer("from app.Token import Token, eToken")
     writer("")
     writer("")
 
@@ -79,10 +79,10 @@ def main():
     sOutputDir = sys.argv[1]
 
     defineAST(sOutputDir,"Expr",[
-        "Binary   - left : Expr, operator : eToken, right : Expr",
+        "Binary   - left : Expr, operator : Token, right : Expr",
         "Grouping - expression : Expr",
         "Literal  - value : object",
-        "Unary    - operator : eToken, right : Expr"
+        "Unary    - operator : Token, right : Expr"
     ])
 
 if __name__ == "__main__":
