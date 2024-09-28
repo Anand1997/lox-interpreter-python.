@@ -1,4 +1,5 @@
 from sys import stderr
+from Token import eToken
 class LoxException(Exception):
     __bHasError = False
     # How to use Usage 
@@ -12,6 +13,10 @@ class LoxException(Exception):
         super().__init__(self.message)
     
     @staticmethod
+    def hasError():
+        return LoxException.__bHasError
+
+    @staticmethod
     def error(nLine : int, message : str):
         LoxException.report(nLine,"",message)
     
@@ -21,5 +26,9 @@ class LoxException(Exception):
         LoxException.__bHasError = True
     
     @staticmethod
-    def hasError():
-        return LoxException.__bHasError
+    def error_token(token : Token, sMessage : str):
+        if token.eType == eToken.EOF :
+            LoxException.report(token.nLine, " at end", sMessage)
+        else:
+            LoxException.report(token.nLine, "at '" + str(token.objLiteral) + "'", sMessage)
+    
