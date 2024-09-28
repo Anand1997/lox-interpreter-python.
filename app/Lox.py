@@ -7,7 +7,7 @@ from app.Parser import Parser
 from app.Token import Token
 import os
 from app.LoxException import LoxException
-# from typing import override
+import sys
 
 # global const
 PROMPT = ">> "
@@ -44,13 +44,17 @@ class Lox(ILox):
         super().__init__()
     
     # @override
-    def run(self, src_str : str) -> None:
+    def run(self, src_str : str, bScannOnly : bool) -> None:
         objScanner = Scanner(src_str)
         lToken : list[Token] = objScanner.scanTokens()
         if lToken is None:
             raise ValueError("[ERROR] Failed to scan the tokne from the file. ")
-        # for token in lToken:
-        #     print(token)
+        
+        if bScannOnly:
+            for token in lToken:
+                print(token)
+            return
+
         objParser = Parser(lToken)
         expression : Expr = objParser.parse()
         # check for syntax error.
@@ -62,12 +66,12 @@ class Lox(ILox):
 
 
     # @override
-    def runFile(self, src_file : str) -> None:
+    def runFile(self, src_file : str, bScannOnly : bool) -> None:
         if not os.path.isfile(src_file):
             raise ValueError("[ERROR] Invalid src file.")
         with open(os.path.abspath(src_file)) as file:
             file_contents = file.read()
-        self.run(file_contents)
+        self.run(file_contents, bScannOnly)
         
 
     def runPrompt(self) -> None:

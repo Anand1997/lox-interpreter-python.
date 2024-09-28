@@ -17,12 +17,12 @@ def main():
     command = sys.argv[1] 
     filename = sys.argv[2]
 
-    if command != "tokenize":
+    if command not in  { "tokenize",  "parse"} :
         print(f"Unknown command: {command}", file=sys.stderr)
         exit(1)
 
     objLox : Lox = Lox.getInstance()
-    objLox.runFile(filename)
+    objLox.runFile(filename, bScannOnly=(command == "tokenize"))
     if LoxException.hasError():
         exit(65)
 
