@@ -22,7 +22,7 @@ class LoxException(Exception):
     
     @staticmethod
     def report(nLine : int, where : str , message : str):
-        print(f"[line {nLine}] Error: {where}{message}", file=stderr)
+        print(f"[line {nLine}] Error {where}: {message}", file=stderr)
         LoxException.__bHasError = True
     
     @staticmethod
@@ -30,5 +30,5 @@ class LoxException(Exception):
         if token.eType == eToken.EOF :
             LoxException.report(token.nLine, " at end", sMessage)
         else:
-            LoxException.report(token.nLine, "at '" + str(token.objLiteral) + "'", sMessage)
+            LoxException.report(token.nLine, "at '" + str(token) + "'", sMessage)
     

@@ -73,6 +73,7 @@ class Token:
             sLitral = "null"
         else:
             sLitral = str(self.objLiteral)
-        return "{0} {1} {2}".format(self.eType.name , 
-                                    self.sLexeme, 
-                                    sLitral)
+        # return "{0} {1} {2}".format(self.eType.name , 
+        #                             self.sLexeme, 
+        #                             sLitral)
+        return f"{self.sLexeme}"
