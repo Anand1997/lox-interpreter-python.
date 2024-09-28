@@ -44,7 +44,7 @@ class Lox(ILox):
         super().__init__()
     
     # @override
-    def run(self, src_str : str, bScannOnly : bool) -> None:
+    def run(self, src_str : str, bScannOnly : bool, bParseOnly : bool) -> None:
         objScanner = Scanner(src_str)
         lToken : list[Token] = objScanner.scanTokens()
         if lToken is None:
@@ -54,24 +54,25 @@ class Lox(ILox):
             for token in lToken:
                 print(token)
             return
-
+        
         objParser = Parser(lToken)
         expression : Expr = objParser.parse()
-        # check for syntax error.
         if(LoxException.hasError()):
             return
-        objASTPrinter = ASTPrinter()
-        strAST = objASTPrinter.print(expression)
-        print(strAST)
+        
+        if bParseOnly:
+            objASTPrinter = ASTPrinter()
+            strAST = objASTPrinter.print(expression)
+            print(strAST)
 
 
     # @override
-    def runFile(self, src_file : str, bScannOnly : bool) -> None:
+    def runFile(self, src_file : str, bScannOnly : bool, bParseOnly : bool) -> None:
         if not os.path.isfile(src_file):
             raise ValueError("[ERROR] Invalid src file.")
         with open(os.path.abspath(src_file)) as file:
             file_contents = file.read()
-        self.run(file_contents, bScannOnly)
+        self.run(file_contents, bScannOnly, bParseOnly)
         
 
     def runPrompt(self) -> None:
