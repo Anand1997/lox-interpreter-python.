@@ -29,7 +29,7 @@ def test_UT_visitGrouping():
 def test_UT_LitralPrint():
     print_caller_info()
     assert "123" == gobjASTPrinter.print(glit123)
-    assert "45.65" == gobjASTPrinter.print(glit45_65)
+    assert "45.67" == gobjASTPrinter.print(glit45_65)
 
 def test_UT_visitUnary():
     print_caller_info()
