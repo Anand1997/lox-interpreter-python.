@@ -1,6 +1,9 @@
 # app/Lox.py
 from abc import ABCMeta, abstractmethod
+from app.ASTSkeleton import Expr
+from app.ASTVisitorPrint import *
 from app.Scanner import Scanner
+from app.Parser import Parser
 from app.Token import Token
 import os
 from app.LoxException import LoxException
@@ -46,8 +49,17 @@ class Lox(ILox):
         lToken : list[Token] = objScanner.scanTokens()
         if lToken is None:
             raise ValueError("[ERROR] Failed to scan the tokne from the file. ")
-        for token in lToken:
-            print(token)
+        # for token in lToken:
+        #     print(token)
+        objParser = Parser(lToken)
+        expression : Expr = objParser.parse()
+        # check for syntax error.
+        if(LoxException.hasError()):
+            return
+        objASTPrinter = ASTPrinter()
+        strAST = objASTPrinter.print(expression)
+        print(strAST)
+
 
     # @override
     def runFile(self, src_file : str) -> None:

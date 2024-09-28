@@ -24,7 +24,6 @@ def main():
     objLox : Lox = Lox.getInstance()
     objLox.runFile(filename)
     if LoxException.hasError():
-        print(" REPORTED AN ERROR ")
         exit(65)
 
 if __name__ == "__main__":

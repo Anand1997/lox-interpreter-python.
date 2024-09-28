@@ -1,5 +1,5 @@
 from sys import stderr
-from Token import eToken
+from app.Token import eToken, Token
 class LoxException(Exception):
     __bHasError = False
     # How to use Usage 
