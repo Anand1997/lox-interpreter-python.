@@ -3,20 +3,11 @@ from abc import ABCMeta, abstractmethod
 from app.Scanner import Scanner
 from app.Token import Token
 import os
+from app.LoxException import LoxException
 # from typing import override
 
 # global const
 PROMPT = ">> "
-
-class LoxException(Exception):
-    # How to use Usage 
-    # try:
-    #     raise MyCustomError("Something went wrong!")
-    # except MyCustomError as e:
-    #     print(e)
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
 
 
 class ILox(metaclass=ABCMeta):

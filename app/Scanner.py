@@ -1,5 +1,6 @@
 from sys import stderr
 from app.Token import eToken, Token
+from app.LoxException import LoxException
 
 bHasError = False
 
@@ -7,18 +8,18 @@ def hasError() -> bool:
     return bHasError
 
 
-class ErrorHandler:
-    @staticmethod
-    def error(nLine : int , sMessage : str) -> None:
-        global bHasError 
-        bHasError = True
-        print(ErrorHandler.report(nLine=nLine,sWhere="",sMessage=sMessage), file=stderr)
+# class ErrorHandler:
+#     @staticmethod
+#     def error(nLine : int , sMessage : str) -> None:
+#         global bHasError 
+#         bHasError = True
+#         print(ErrorHandler.report(nLine=nLine,sWhere="",sMessage=sMessage), file=stderr)
 
-    @staticmethod
-    def report(nLine : int, sWhere : str , sMessage : str ) -> str:
-        return "[line {0}] Error: {1}{2}".format(str(nLine),
-                                                   sWhere,
-                                                   sMessage)
+#     @staticmethod
+#     def report(nLine : int, sWhere : str , sMessage : str ) -> str:
+#         return "[line {0}] Error: {1}{2}".format(str(nLine),
+#                                                    sWhere,
+#                                                    sMessage)
 
 class Scanner:
     def __init__(self, src_str : str) -> None:
@@ -47,7 +48,10 @@ class Scanner:
         if self.__scanTokenDigit(char)         : return # digit
         if self.__scanTokenSingleChar(char)    : return # single char token
         if self.__scanTokenIdentifierOrKeyWord(char)    : return
-        ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
+        # ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
+        LoxException.error(self.__nCurrentLine, "Unexpected character: " + char)
+        
+
     
     def __scanTokenInvisibleChar(self, currentChar : str) -> bool:
         if currentChar in {' ','\r','\t'} :
@@ -81,7 +85,8 @@ class Scanner:
                     self.__nCurrentLine = self.__nCurrentLine + 1
                 self.advance() # this will return each character of string
             if self.isAtEnd():
-                ErrorHandler.error(self.__nCurrentLine, "Unterminated string.")
+                # ErrorHandler.error(self.__nCurrentLine, "Unterminated string.")
+                LoxException.error(self.__nCurrentLine, "Unterminated string.")
                 return True # FIXME verify this 
             self.advance()  # closing '"'
             self.addToken(eToken.STRING, self.__src_str[self.__nStart + 1 : self.__nCurrent - 1])

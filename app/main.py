@@ -1,5 +1,6 @@
 import sys
 import os
+from app.LoxException import LoxException
 from app.Scanner import Scanner, hasError
 from app.Lox import Lox
 
@@ -22,7 +23,8 @@ def main():
 
     objLox : Lox = Lox.getInstance()
     objLox.runFile(filename)
-    if hasError():
+    if LoxException.hasError():
+        print(" REPORTED AN ERROR ")
         exit(65)
 
 if __name__ == "__main__":
