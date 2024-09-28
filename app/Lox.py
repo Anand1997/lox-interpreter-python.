@@ -1,5 +1,8 @@
 # app/Lox.py
 from abc import ABCMeta, abstractmethod
+from app.Scanner import Scanner
+from app.Token import Token
+import os
 # from typing import override
 
 # global const
@@ -24,7 +27,7 @@ class ILox(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def runFile(self, src_str : str) -> None:
+    def runFile(self, src_file : str) -> None:
         raise NotImplemented('[ERROR] call to ILox::runFile() is not allowed.')
 
     # @staticmethod
@@ -36,7 +39,7 @@ class ILox(metaclass=ABCMeta):
 
 class Lox(ILox):
     __objLoxInstance = None
-    
+
     @staticmethod
     def getInstance():
         if Lox.__objLoxInstance == None:
@@ -48,17 +51,24 @@ class Lox(ILox):
     
     # @override
     def run(self, src_str : str) -> None:
-        print(" >> Strted Lox::run() ...")
-        print(src_str)
-        print(" >> End Lox::run() ...")
-    
+        objScanner = Scanner(src_str)
+        lToken : list[Token] = objScanner.scanTokens()
+        if lToken is None:
+            raise ValueError("[ERROR] Failed to scan the tokne from the file. ")
+        for token in lToken:
+            print(token)
+
     # @override
-    def runFile(self, src_str : str) -> None:
-        print(" >> Strted Lox::runFile() ...")
-        print(src_str)
-        print(" >> End Lox::runFile() ...")
+    def runFile(self, src_file : str) -> None:
+        if not os.path.isfile(src_file):
+            raise ValueError("[ERROR] Invalid src file.")
+        with open(os.path.abspath(src_file)) as file:
+            file_contents = file.read()
+        self.run(file_contents)
+        
 
     def runPrompt(self) -> None:
+        # TODO set-up signal handling ( Ctrl+D , Ctrl+Z)
         try:
             while True:
                 self.run(input(PROMPT))

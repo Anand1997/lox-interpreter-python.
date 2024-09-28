@@ -28,7 +28,7 @@ class Scanner:
         self.__nCurrent :int = 0
         self.__nCurrentLine : int = 1
     
-    def scanTokens(self) -> list:
+    def scanTokens(self) -> list[Token]:
         while not self.isAtEnd():
             self.__nStart = self.__nCurrent
             self.scanToken()
