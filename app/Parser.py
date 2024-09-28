@@ -107,6 +107,7 @@ class Parser:
             expr : Expr = self.expression()
             self.__consume(eToken.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
+        self.error(self.__peek(), "Expect expression.")
         
     def error(self, token : Token, message : str) -> LoxException:
         LoxException.error_token(token, message)
@@ -117,9 +118,9 @@ class Parser:
     def parse(self):
         try:
             return self.expression() 
-        except ValueError:
-            print("Error in Parsing")
-        return
+        except (ValueError, LoxException):
+            print(">> Error in Parsing")
+            return None
 
 # HELPER API
     def __match(self, *args : eToken) -> bool:
