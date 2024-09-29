@@ -108,6 +108,7 @@ class Parser:
             self.__consume(eToken.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
         self.error(self.__peek(), "Expect expression.")
+        print("ERROR AT:" + str(self.__peek()) + " at : {0}".format(self.__peek().nLine))
         
     def error(self, token : Token, message : str) -> LoxException:
         LoxException.error_token(token, message)
