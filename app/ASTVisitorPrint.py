@@ -17,18 +17,18 @@ class ASTPrinter(visitor):
         sAns = sAns + ")"
         return sAns
     
-    def visitBinary(self, element):
+    def visitBinary(self, element : Binary):
         return self.parenthesize(element.operator.sLexeme,
                                  element.left, element.right)
     
-    def visitGrouping(self, element):
+    def visitGrouping(self, element : Grouping):
         return self.parenthesize("group", element.expression)
 
     def visitLiteral(self, element : Literal):
-        if isinstance(element.value , bool):
-            return "true" if element.value else "false"
+        if isinstance(element.value , bool): return "true" if element.value else "false"
+        if element.value is None : return "nil"
         return str(element.value)
 
-    def visitUnary(self, element):
+    def visitUnary(self, element : Unary):
         return self.parenthesize(element.operator.sLexeme, element.right)
 
