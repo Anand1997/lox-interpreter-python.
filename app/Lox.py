@@ -45,30 +45,26 @@ class Lox(ILox):
         super().__init__()
     
     # @override
+    # FIXME :  Clean this code .
     def run(self, src_str : str, bScannOnly : bool, bParseOnly : bool) -> None:
+        
         objScanner = Scanner(src_str)
         lToken : list[Token] = objScanner.scanTokens()
-        if lToken is None:
-            raise ValueError("[ERROR] Failed to scan the tokne from the file. ")
-        objParser = Parser(lToken)
+        if lToken is None: raise ValueError("[ERROR] Failed to scan the tokne from the file. ")        
+        if bScannOnly :
+            for token in lToken: print(token)
+            return
+        objParser  = Parser(lToken)
         expression : Expr = objParser.parse()
-
-        
-        if bScannOnly:
-            for token in lToken:
-                print(token)
-            return
-        
         # syntax error 
-        if(LoxException.hasError()):
-            return
-        
+        if(LoxException.hasError()): return
         if bParseOnly:
+            # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
             strAST = objASTPrinter.print(expression)
             print(strAST)
             return
-        
+        # Interpreter is a visitor
         objInterpreter = Interpreter()
         objInterpreter.interpret(expression)
 
