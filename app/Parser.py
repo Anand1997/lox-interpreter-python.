@@ -102,7 +102,7 @@ class Parser:
         if self.__match(eToken.VAR)     : return Literal('var')
         if self.__match(eToken.WHILE)   : return Literal('while')
         if self.__match(eToken.NUMBER, eToken.STRING) : 
-            return Literal(str(self.__previous().objLiteral))
+            return Literal(self.__previous().objLiteral)
         if self.__match(eToken.LEFT_PAREN):
             expr : Expr = self.expression()
             self.__consume(eToken.RIGHT_PAREN, "Expect ')' after expression.")
