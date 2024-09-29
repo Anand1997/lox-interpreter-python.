@@ -118,7 +118,7 @@ class Scanner:
     def identifierOrKeyWord(self) -> None:
         while self.peek().isalnum() or self.peek() == '_':
             self.advance()
-        sCurrentToken = self.__src_str[self.__nStart : self.__nCurrent]
+        sCurrentToken = (self.__src_str[self.__nStart : self.__nCurrent]).lower() 
         if sCurrentToken in eToken._value2member_map_:
             self.addToken(eToken(sCurrentToken))
         else:

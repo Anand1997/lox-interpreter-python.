@@ -109,6 +109,7 @@ class Parser:
             return Grouping(expr)
         self.error(self.__peek(), "Expect expression.")
         
+                
     def error(self, token : Token, message : str) -> LoxException:
         LoxException.error_token(token, message)
         return LoxException
