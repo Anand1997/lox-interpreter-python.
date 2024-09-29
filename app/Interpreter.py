@@ -106,6 +106,7 @@ class Interpreter(visitor):
     
     def __stringify(self,obj : object):
         if obj == None : return "nil"
+        if isinstance(obj,bool) : return "true" if obj else "false"
         if isinstance(obj, (float,int)) : 
             if obj.is_integer() : return str(int(obj))
         return str(obj)

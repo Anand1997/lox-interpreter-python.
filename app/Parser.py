@@ -92,7 +92,7 @@ class Parser:
         if self.__match(eToken.FUN)     : return Literal('fun')
         if self.__match(eToken.FOR)     : return Literal('for')
         if self.__match(eToken.IF)      : return Literal('if')
-        if self.__match(eToken.NIL)     : return Literal('nil')
+        if self.__match(eToken.NIL)     : return Literal(None) # Literal('nil')
         if self.__match(eToken.OR)      : return Literal('or')
         if self.__match(eToken.PRINT)   : return Literal('print')
         if self.__match(eToken.RETURN)  : return Literal('return')
