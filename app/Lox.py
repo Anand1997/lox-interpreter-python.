@@ -7,6 +7,7 @@ from app.Parser import Parser
 from app.Token import Token
 import os
 from app.LoxException import LoxException
+from app.Interpreter import *
 import sys
 
 # global const
@@ -49,14 +50,16 @@ class Lox(ILox):
         lToken : list[Token] = objScanner.scanTokens()
         if lToken is None:
             raise ValueError("[ERROR] Failed to scan the tokne from the file. ")
+        objParser = Parser(lToken)
+        expression : Expr = objParser.parse()
+
         
         if bScannOnly:
             for token in lToken:
                 print(token)
             return
         
-        objParser = Parser(lToken)
-        expression : Expr = objParser.parse()
+        # syntax error 
         if(LoxException.hasError()):
             return
         
@@ -64,6 +67,12 @@ class Lox(ILox):
             objASTPrinter = ASTPrinter()
             strAST = objASTPrinter.print(expression)
             print(strAST)
+            return
+        
+        objInterpreter = Interpreter()
+        objInterpreter.interpret(expression)
+
+        
 
 
     # @override

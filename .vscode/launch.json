@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "app.main",
             "console": "integratedTerminal",
-            "args": ["tokenize", "test.lox"],
+            "args": ["parse", "test.lox"],
             "cwd": "${workspaceFolder}"
         }
     ]

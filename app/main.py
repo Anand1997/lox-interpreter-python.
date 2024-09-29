@@ -22,7 +22,7 @@ def main():
         exit(1)
 
     objLox : Lox = Lox.getInstance()
-    objLox.runFile(filename, bScannOnly=(command == "tokenize"), 
+    objLox.runFile(filename, bScannOnly= (command == "tokenize"), 
                              bParseOnly = (command == "parse"))
     if LoxException.hasError():
         exit(65)

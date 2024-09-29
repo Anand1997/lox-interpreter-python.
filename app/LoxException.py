@@ -31,4 +31,9 @@ class LoxException(Exception):
             LoxException.report(token.nLine, " at end", sMessage)
         else:
             LoxException.report(token.nLine, "at '" + str(token) + "'", sMessage)
-    
+
+
+class LoxRuntimeError(RuntimeError):
+    def __init__(self, token : Token, *args: object) -> None:
+        super().__init__(*args)
+        self.__token = token
