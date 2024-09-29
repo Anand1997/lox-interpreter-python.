@@ -24,7 +24,9 @@ class ASTPrinter(visitor):
     def visitGrouping(self, element):
         return self.parenthesize("group", element.expression)
 
-    def visitLiteral(self, element):
+    def visitLiteral(self, element : Literal):
+        if isinstance(element.value , bool):
+            return "true" if element.value else "false"
         return str(element.value)
 
     def visitUnary(self, element):
