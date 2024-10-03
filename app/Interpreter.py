@@ -39,7 +39,7 @@ class Interpreter(visitor):
                 return float(left) + float(right)
             if isinstance(left, str) and isinstance(right, str):
                 return str(left) + str(right)
-            raise LoxRuntimeError(LoxError(message="Operand must be two numbers or two strings.",token=operator))
+            raise LoxRuntimeError(LoxError(message="Operand must be two numbers or two strings.",token=expr.operator))
         if expr.operator.eType is eToken.SLASH:
             self.__checkNumberOperands(expr.operator, left, right)
             return float(left) / float(right)
