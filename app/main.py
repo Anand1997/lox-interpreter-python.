@@ -6,6 +6,18 @@ from app.Lox import Lox
 
 # TODO set-up signal handling ( Ctrl+D , Ctrl+Z)
 
+# TODO List 
+    # FIXME Improve frontend design 
+        # 1. Cmdline input 
+        # 2. Modes of operation
+        # 3. Debug print and debug context  
+    # FIXME Add better Error handling.
+        # 1. Commndline argument error 
+        # 1. Parsing error 
+        # 2. Runtime error 
+    # FIXME Pass all TC.
+
+
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
