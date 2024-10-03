@@ -56,11 +56,8 @@ def addConcreteElement(writer, sBaseClass : str , sType : list):
         writer(" ")
         writer(" ")
 
-def defineASTSkeleton(sDirPath : str , sBaseClass : str, lElement : list[str]):
+def defineASTSkeleton(file_path : str , sBaseClass : str, lElement : list[str]):
     lElementName = [s.split("-")[0].strip() for s in lElement ]
-    path = createDir(sDirPath=sDirPath)
-    file_path = path / "ASTSkeleton.py"
-    file_path.touch()
     file = open(file_path,"w")
     writer = lambda x : print(x,file=file)
     addHeader(writer)
@@ -71,6 +68,7 @@ def defineASTSkeleton(sDirPath : str , sBaseClass : str, lElement : list[str]):
     writer("# END OF FILE")
     file.close()
 
+
 def main():
     if(len(sys.argv) != 2):
         print("## Invalid no of argument.")
@@ -79,11 +77,22 @@ def main():
         exit(65)
     sOutputDir = sys.argv[1]
 
-    defineASTSkeleton(sOutputDir,"Expr",[
+    path = createDir(sOutputDir)
+    
+    file_path_expr = path / "ASTSkeleton.py"
+    file_path_expr.touch()
+    defineASTSkeleton(file_path_expr,"Expr",[
         "Binary   - left : Expr, operator : Token, right : Expr",
         "Grouping - expression : Expr",
         "Literal  - value : object",
         "Unary    - operator : Token, right : Expr"
+    ])
+
+    file_path_stmt = path / "StmtSkeleton.py"
+    file_path_stmt.touch()
+    defineASTSkeleton(file_path_stmt,"Stmt",[
+        "Expression - expression : Expr",
+        "Print      - expression : Expr"
     ])
 
     # TODO : Automate the creation of the visitor implementation

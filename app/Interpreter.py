@@ -10,16 +10,19 @@
 """
 
 from app.LoxException import *
-from app.ASTSkeleton import *
+from app.ASTSkeleton import Expr , Binary , Grouping, Literal, Unary
+from app.ASTSkeleton import visitor as ASTVisitor
+from app.StmtSkeleton import Stmt
+from app.StmtSkeleton import visitorStmt as SrmtVisitor
 
-class Interpreter(visitor):
+class Interpreter(ASTVisitor, SrmtVisitor):
     def __init__(self):
         pass
 
-    def interpret(self, expression : Expr):
+    def interpret(self, statements : list[Stmt]):
         try:
-            value : object = self.__evaluate(expression)
-            print(self.__stringify(value))
+            for statement in statements:
+                self.execute(statement)
         except (RuntimeError, LoxRuntimeError):
             LoxRuntimeError.runtimeError()
             return
@@ -27,6 +30,20 @@ class Interpreter(visitor):
     def __evaluate(self, expr : Expr):
         return expr.accept(self)
     
+    def execute(self, stmt : Stmt):
+        return stmt.accept(self)
+
+    # override 
+    def visitExpressionStmt(self, stmt):
+        self.__evaluate(stmt.expression)
+        return None
+    
+    # override 
+    def visitPrintStmt(self, stmt):
+        value : object = self.__evaluate(stmt.expression)
+        print(self.__stringify(value))
+        return None
+
     def visitBinary(self, expr : Binary):
         left : object = self.__evaluate(expr.left)
         right : object = self.__evaluate(expr.right)

@@ -1,6 +1,18 @@
 """
 Grammer to Implement :
 =========================================================================
+------------------------------------------------------------------------
+// To support experession
+------------------------------------------------------------------------
+program        → statement* EOF ;
+
+statement      → exprStmt
+               | printStmt ;
+
+exprStmt       → expression ";" ;
+printStmt      → "print" expression ";" ;
+...
+------------------------------------------------------------------------
 expression     → equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
@@ -27,12 +39,28 @@ primary        → ...
 from app.Token import Token, eToken
 from app.ASTSkeleton import *
 from app.LoxException import *
+from app.StmtSkeleton import *
 
 class Parser:
 
     def __init__(self, lTokens : list[Token]) -> None:
         self.__nCurrent : int = 0
         self.__lTokens : list[Token] = lTokens
+
+    def statement(self) -> Stmt:
+        if(self.__match(eToken.PRINT)) : return self.__printStatement()
+        return self.__expressionStatement()
+    
+    def __printStatement(self):
+        value : Expr = self.expression()
+        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        return PrintStmt(value)
+
+    def __expressionStatement(self):
+        value : Expr = self.expression()
+        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        return Expression(value)
+
     
     def expression(self):
         # expression -> equality 
@@ -117,7 +145,10 @@ class Parser:
 # MAIN API 
     def parse(self):
         try:
-            return self.expression() 
+            statements : list[Stmt] = []
+            while(not self.__isAtEnd()):
+                statements.append(self.statement())
+            return statements
         except (ValueError, LoxException):
             print(">> Error in Parsing")
             return None

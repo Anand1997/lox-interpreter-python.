@@ -55,19 +55,19 @@ class Lox(ILox):
             for token in lToken: print(token)
             return
         objParser  = Parser(lToken)
-        expression : Expr = objParser.parse()
+        statements : Stmt = objParser.parse()
         # syntax error 
         if(LoxException.hasError()): exit(65)
         # if(bHadRuntimeError) : exit(70)        
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
-            strAST = objASTPrinter.print(expression)
+            strAST = objASTPrinter.print(statements)
             print(strAST)
             return
         # Interpreter is a visitor
         objInterpreter = Interpreter()
-        objInterpreter.interpret(expression)
+        objInterpreter.interpret(statements)
         if(LoxRuntimeError.hasError()) : exit(70)
 
 
