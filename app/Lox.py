@@ -6,7 +6,7 @@ from app.Scanner import Scanner
 from app.Parser import Parser
 from app.Token import Token
 import os
-from app.LoxException import LoxException
+from app.LoxException import LoxException, LoxRuntimeError
 from app.Interpreter import *
 import sys
 
@@ -57,7 +57,8 @@ class Lox(ILox):
         objParser  = Parser(lToken)
         expression : Expr = objParser.parse()
         # syntax error 
-        if(LoxException.hasError()): return
+        if(LoxException.hasError()): exit(65)
+        # if(bHadRuntimeError) : exit(70)        
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
@@ -67,8 +68,7 @@ class Lox(ILox):
         # Interpreter is a visitor
         objInterpreter = Interpreter()
         objInterpreter.interpret(expression)
-
-        
+        if(LoxRuntimeError.hasError()) : exit(70)
 
 
     # @override

@@ -32,8 +32,30 @@ class LoxException(Exception):
         else:
             LoxException.report(token.nLine, "at '" + str(token) + "'", sMessage)
 
+class LoxError():
+    def __init__(self, message : str, token : Token) -> None:
+        self.token = token
+        self.message = message
+    
+    def getMessage(self):
+        return self.message
+
+
+
 
 class LoxRuntimeError(RuntimeError):
-    def __init__(self, token : Token, *args: object) -> None:
+    __token = None
+    __bHadRuntimeError = False
+    def __init__(self, error : LoxError, *args: object) -> None:
         super().__init__(*args)
-        self.__token = token
+        LoxRuntimeError.__error = error
+    
+    @staticmethod
+    def runtimeError():
+        print(f">> {LoxRuntimeError.__error.getMessage()}\n",
+              f"[line {LoxRuntimeError.__error.token.nLine}]",file=stderr)
+        LoxRuntimeError.__bHadRuntimeError = True
+    
+    @staticmethod
+    def hasError():
+        return LoxRuntimeError.__bHadRuntimeError

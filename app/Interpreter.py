@@ -20,8 +20,8 @@ class Interpreter(visitor):
         try:
             value : object = self.__evaluate(expression)
             print(self.__stringify(value))
-        except RuntimeError:
-            # TODO add runtime error handling here
+        except (RuntimeError, LoxRuntimeError):
+            LoxRuntimeError.runtimeError()
             return
 
     def __evaluate(self, expr : Expr):
@@ -39,7 +39,7 @@ class Interpreter(visitor):
                 return float(left) + float(right)
             if isinstance(left, str) and isinstance(right, str):
                 return str(left) + str(right)
-            raise RuntimeError
+            raise LoxRuntimeError(LoxError(message="Operand must be two numbers or two strings.",token=operator))
         if expr.operator.eType is eToken.SLASH:
             self.__checkNumberOperands(expr.operator, left, right)
             return float(left) / float(right)
@@ -98,11 +98,11 @@ class Interpreter(visitor):
     
     def __checkNumberOperand(self,operator : Token, operand : object):
         if isinstance(operand, float) : return
-        raise RuntimeError
+        raise LoxRuntimeError(LoxError(message="Operand must be a number.",token=operator))
 
     def __checkNumberOperands(self,operator : Token, left : object, right : object):
         if isinstance(left, float) and isinstance(right, float) : return
-        raise RuntimeError
+        raise LoxRuntimeError(LoxError(message="Operand must be a number.",token=operator))
     
     def __stringify(self,obj : object):
         if obj == None : return "nil"
