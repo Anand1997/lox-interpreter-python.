@@ -1,6 +1,7 @@
 from sys import stderr
 from app.Token import eToken, Token
-class LoxException(Exception):
+
+class LoxParserException(Exception):
     __bHasError = False
     # How to use Usage 
     # try:
@@ -8,29 +9,29 @@ class LoxException(Exception):
     # except MyCustomError as e:
     #     print(e)
     def __init__(self, message):
-        LoxException.__bHasError = False
+        LoxParserException.__bHasError = False
         self.message = message
         super().__init__(self.message)
     
     @staticmethod
     def hasError():
-        return LoxException.__bHasError
+        return LoxParserException.__bHasError
 
     @staticmethod
     def error(nLine : int, message : str):
-        LoxException.report(nLine,"",message)
+        LoxParserException.report(nLine,"",message)
     
     @staticmethod
     def report(nLine : int, where : str , message : str):
         print(f"[line {nLine}] Error{where}: {message}", file=stderr)
-        LoxException.__bHasError = True
+        LoxParserException.__bHasError = True
     
     @staticmethod
     def error_token(token : Token, sMessage : str):
         if token.eType == eToken.EOF :
-            LoxException.report(token.nLine, "at end", sMessage)
+            LoxParserException.report(token.nLine, "at end", sMessage)
         else:
-            LoxException.report(token.nLine, "at '" + str(token) + "'", sMessage)
+            LoxParserException.report(token.nLine, "at '" + str(token) + "'", sMessage)
 
 class LoxError():
     def __init__(self, message : str, token : Token) -> None:

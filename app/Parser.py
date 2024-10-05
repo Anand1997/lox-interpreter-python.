@@ -137,9 +137,9 @@ class Parser:
             return Grouping(expr)
         self.error(self.__peek(), "Expect expression.")
                 
-    def error(self, token : Token, message : str) -> LoxException:
-        LoxException.error_token(token, message)
-        return LoxException
+    def error(self, token : Token, message : str) -> LoxParserException:
+        LoxParserException.error_token(token, message)
+        return LoxParserException
 
 
 # MAIN API 
@@ -149,7 +149,7 @@ class Parser:
             while(not self.__isAtEnd()):
                 statements.append(self.statement())
             return statements
-        except (ValueError, LoxException):
+        except (ValueError, LoxParserException):
             print(">> Error in Parsing")
             return None
 

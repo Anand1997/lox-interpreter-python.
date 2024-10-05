@@ -1,6 +1,6 @@
 import sys
 import os
-from app.LoxException import LoxException
+from app.LoxException import LoxParserException
 from app.Scanner import Scanner, hasError
 from app.Lox import Lox
 
@@ -36,7 +36,7 @@ def main():
     objLox : Lox = Lox.getInstance()
     objLox.runFile(filename, bScannOnly= (command == "tokenize"), 
                              bParseOnly = (command == "parse"))
-    if LoxException.hasError():
+    if LoxParserException.hasError():
         exit(65)
 
 if __name__ == "__main__":

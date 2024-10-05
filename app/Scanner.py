@@ -1,6 +1,6 @@
 from sys import stderr
 from app.Token import eToken, Token
-from app.LoxException import LoxException
+from app.LoxException import LoxParserException
 
 bHasError = False
 
@@ -49,7 +49,7 @@ class Scanner:
         if self.__scanTokenSingleChar(char)    : return # single char token
         if self.__scanTokenIdentifierOrKeyWord(char)    : return
         # ErrorHandler.error(self.__nCurrentLine, "Unexpected character: " + char)
-        LoxException.error(self.__nCurrentLine, "Unexpected character: " + char)
+        LoxParserException.error(self.__nCurrentLine, "Unexpected character: " + char)
         
 
     
@@ -86,7 +86,7 @@ class Scanner:
                 self.advance() # this will return each character of string
             if self.isAtEnd():
                 # ErrorHandler.error(self.__nCurrentLine, "Unterminated string.")
-                LoxException.error(self.__nCurrentLine, "Unterminated string.")
+                LoxParserException.error(self.__nCurrentLine, "Unterminated string.")
                 return True # FIXME verify this 
             self.advance()  # closing '"'
             self.addToken(eToken.STRING, self.__src_str[self.__nStart + 1 : self.__nCurrent - 1])
