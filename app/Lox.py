@@ -9,6 +9,7 @@ import os
 from app.LoxException import LoxParserException, LoxRuntimeError
 from app.Interpreter import *
 import sys
+from typing import Callable
 
 # global const
 PROMPT = ">> "
@@ -46,19 +47,25 @@ class Lox(ILox):
     
     # @override
     # FIXME :  Clean this code .
-    def run(self, src_str : str, bScannOnly : bool, bParseOnly : bool) -> None:
+    def run(self, src_str : str, cmd : str) -> None:
         
+        # TODO Use functional pattern to improve this
+        bScannOnly : bool =  (cmd == "tokenize")
+        bParseOnly : bool =  (cmd == "parse")
+
         objScanner = Scanner(src_str)
         lToken : list[Token] = objScanner.scanTokens()
         if lToken is None: raise ValueError("[ERROR] Failed to scan the tokne from the file. ")        
         if bScannOnly :
             for token in lToken: print(token)
             return
+        
         objParser  = Parser(lToken)
         statements : Stmt = objParser.parse()
         # syntax error 
-        if(LoxParserException.hasError()): exit(65)
+        if(True == LoxParserException.hasError()): return
         # if(bHadRuntimeError) : exit(70)        
+        
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
@@ -72,12 +79,12 @@ class Lox(ILox):
 
 
     # @override
-    def runFile(self, src_file : str, bScannOnly : bool, bParseOnly : bool) -> None:
+    def runFile(self, src_file : str, cmd : str) -> None:
         if not os.path.isfile(src_file):
             raise ValueError("[ERROR] Invalid src file.")
         with open(os.path.abspath(src_file)) as file:
             file_contents = file.read()
-        self.run(file_contents, bScannOnly, bParseOnly)
+        self.run(file_contents, cmd)
         
 
     def runPrompt(self) -> None:

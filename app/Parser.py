@@ -139,7 +139,7 @@ class Parser:
                 
     def error(self, token : Token, message : str) -> LoxParserException:
         LoxParserException.error_token(token, message)
-        return LoxParserException
+        raise LoxParserException(message)
 
 
 # MAIN API 

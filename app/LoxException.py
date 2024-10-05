@@ -1,17 +1,29 @@
 from sys import stderr
 from app.Token import eToken, Token
 
+"""
+class Singleton:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Singleton, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+"""
+
 class LoxParserException(Exception):
+    _instance = None
     __bHasError = False
     # How to use Usage 
     # try:
     #     raise MyCustomError("Something went wrong!")
     # except MyCustomError as e:
-    #     print(e)
-    def __init__(self, message):
-        LoxParserException.__bHasError = False
-        self.message = message
-        super().__init__(self.message)
+    # #     print(e)
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(LoxParserException, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
     
     @staticmethod
     def hasError():
