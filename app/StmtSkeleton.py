@@ -20,7 +20,7 @@ class visitorStmt(metaclass=ABCMeta):
     def visitPrintStmt(self, stmt):
         raise NotImplemented('ERROR : Not implimented !')
 
-# Class Expression - expression : Expr
+# Class Expression - expression : Stmt
 class Expression(Stmt):
     def __init__( self, expression : Expr ) -> None:
        self.expression = expression
@@ -29,7 +29,7 @@ class Expression(Stmt):
         return visitor.visitExpressionStmt(self)
  
  
-# Class Print      - expression : Expr
+# Class Print      - expression : Stmt
 class PrintStmt(Stmt):
     def __init__( self, expression : Expr ) -> None:
        self.expression = expression

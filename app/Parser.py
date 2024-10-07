@@ -58,7 +58,7 @@ class Parser:
 
     def __expressionStatement(self):
         value : Expr = self.expression()
-        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        # # self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
         return Expression(value)
 
     

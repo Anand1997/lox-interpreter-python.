@@ -70,9 +70,9 @@ class Lox(ILox):
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
-            strAST = objASTPrinter.print(statements)
-            # strAST = objASTPrinter.print(expression)
-            print(strAST)
+            # print(objASTPrinter.print(expression))
+            for statement in statements: 
+                print(objASTPrinter.print(statement.expression))
             return
         # Interpreter is a visitor
         objInterpreter = Interpreter()

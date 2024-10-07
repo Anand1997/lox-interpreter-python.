@@ -22,7 +22,7 @@ class Interpreter(ASTVisitor, SrmtVisitor):
     def interpret(self, statements : list[Stmt]): # expression): 
         try:
             for statement in statements:
-                self.execute(statement)
+                val = self.execute(statement)
             # if(expression is None):
             #     raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
             # val = self.__evaluate(expression)
@@ -39,7 +39,8 @@ class Interpreter(ASTVisitor, SrmtVisitor):
 
     # override 
     def visitExpressionStmt(self, stmt):
-        self.__evaluate(stmt.expression)
+        value : object = self.__evaluate(stmt.expression)
+        print(self.__stringify(value))
         return None
     
     # override 
