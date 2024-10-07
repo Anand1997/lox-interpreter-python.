@@ -19,10 +19,12 @@ class Interpreter(ASTVisitor, SrmtVisitor):
     def __init__(self):
         pass
 
-    def interpret(self, statements : list[Stmt]):
+    def interpret(self, expression): #statements : list[Stmt]):
         try:
-            for statement in statements:
-                self.execute(statement)
+            # for statement in statements:
+            #     self.execute(statement)
+            val = self.__evaluate(expression)
+            return self.__stringify(val)
         except (RuntimeError, LoxRuntimeError):
             LoxRuntimeError.runtimeError()
             return

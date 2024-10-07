@@ -61,7 +61,8 @@ class Lox(ILox):
             return
         
         objParser  = Parser(lToken)
-        statements : Stmt = objParser.parse()
+        expression = objParser.parse()
+        # statements : Stmt = objParser.parse()
         # syntax error 
         if(True == LoxParserException.hasError()): return
         # if(bHadRuntimeError) : exit(70)        
@@ -69,12 +70,14 @@ class Lox(ILox):
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
-            strAST = objASTPrinter.print(statements)
+            #strAST = objASTPrinter.print(statements)
+            strAST = objASTPrinter.print(expression)
             print(strAST)
             return
         # Interpreter is a visitor
         objInterpreter = Interpreter()
-        objInterpreter.interpret(statements)
+        # objInterpreter.interpret(statements)
+        objInterpreter.interpret(expression)
         if(LoxRuntimeError.hasError()) : return
 
 

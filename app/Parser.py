@@ -145,10 +145,11 @@ class Parser:
 # MAIN API 
     def parse(self):
         try:
-            statements : list[Stmt] = []
-            while(not self.__isAtEnd()):
-                statements.append(self.statement())
-            return statements
+            # statements : list[Stmt] = []
+            # while(not self.__isAtEnd()):
+            #     statements.append(self.statement())
+            # return statements
+            return self.expression()
         except (ValueError, LoxParserException):
             print(">> Error in Parsing", file=stderr)
             return None
