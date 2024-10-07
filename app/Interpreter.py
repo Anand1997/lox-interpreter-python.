@@ -23,8 +23,10 @@ class Interpreter(ASTVisitor, SrmtVisitor):
         try:
             # for statement in statements:
             #     self.execute(statement)
+            if(expression is None):
+                raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
             val = self.__evaluate(expression)
-            return self.__stringify(val)
+            print(self.__stringify(val))
         except (RuntimeError, LoxRuntimeError):
             LoxRuntimeError.runtimeError()
             return

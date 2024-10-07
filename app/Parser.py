@@ -54,12 +54,12 @@ class Parser:
     def __printStatement(self):
         value : Expr = self.expression()
         self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
-        return PrintStmt(value)
+        return  value # PrintStmt(value)
 
     def __expressionStatement(self):
         value : Expr = self.expression()
-        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
-        return Expression(value)
+        # self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        return value # Expression(value)
 
     
     def expression(self):
@@ -122,7 +122,7 @@ class Parser:
         if self.__match(eToken.IF)      : return Literal('if')
         if self.__match(eToken.NIL)     : return Literal(None)   # Literal('nil')
         if self.__match(eToken.OR)      : return Literal('or')
-        if self.__match(eToken.PRINT)   : return Literal('print')
+        # if self.__match(eToken.PRINT)   : return Literal('print')
         if self.__match(eToken.RETURN)  : return Literal('return')
         if self.__match(eToken.SUPER)   : return Literal('super')
         if self.__match(eToken.THIS)    : return Literal('this')
@@ -149,7 +149,7 @@ class Parser:
             # while(not self.__isAtEnd()):
             #     statements.append(self.statement())
             # return statements
-            return self.expression()
+            return self.statement()
         except (ValueError, LoxParserException):
             print(">> Error in Parsing", file=stderr)
             return None

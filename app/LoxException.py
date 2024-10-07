@@ -35,7 +35,7 @@ class LoxParserException(Exception):
     
     @staticmethod
     def report(nLine : int, where : str , message : str):
-        print(f"[line {nLine}] Error {where}: {message}", file=stderr)
+        print(f"[line {nLine}] Error:{where} {message}", file=stderr)
         LoxParserException.__bHasError = True
     
     @staticmethod
