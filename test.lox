@@ -1,1 +1,2 @@
-"foo" "unterminated
+print "Hello, World!";
+print 42;

@@ -19,14 +19,14 @@ class Interpreter(ASTVisitor, SrmtVisitor):
     def __init__(self):
         pass
 
-    def interpret(self, expression): #statements : list[Stmt]):
+    def interpret(self, statements : list[Stmt]): # expression): 
         try:
-            # for statement in statements:
-            #     self.execute(statement)
-            if(expression is None):
-                raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
-            val = self.__evaluate(expression)
-            print(self.__stringify(val))
+            for statement in statements:
+                self.execute(statement)
+            # if(expression is None):
+            #     raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
+            # val = self.__evaluate(expression)
+            # print(self.__stringify(val))
         except (RuntimeError, LoxRuntimeError):
             LoxRuntimeError.runtimeError()
             return
