@@ -75,7 +75,7 @@ class Lox(ILox):
         # Interpreter is a visitor
         objInterpreter = Interpreter()
         objInterpreter.interpret(statements)
-        if(LoxRuntimeError.hasError()) : exit(70)
+        if(LoxRuntimeError.hasError()) : return
 
 
     # @override
@@ -85,6 +85,8 @@ class Lox(ILox):
         with open(os.path.abspath(src_file)) as file:
             file_contents = file.read()
         self.run(file_contents, cmd)
+        if(LoxParserException.hasError()) : exit(65)
+        if(LoxRuntimeError.hasError()) : exit(70)
         
 
     def runPrompt(self) -> None:

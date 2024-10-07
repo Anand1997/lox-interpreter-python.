@@ -150,7 +150,7 @@ class Parser:
                 statements.append(self.statement())
             return statements
         except (ValueError, LoxParserException):
-            print(">> Error in Parsing")
+            print(">> Error in Parsing", file=stderr)
             return None
 
 # HELPER API
