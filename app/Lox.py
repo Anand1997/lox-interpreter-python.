@@ -52,6 +52,7 @@ class Lox(ILox):
         # TODO Use functional pattern to improve this
         bScannOnly : bool =  (cmd == "tokenize")
         bParseOnly : bool =  (cmd == "parse")
+        bEvalOnly  : bool =  (cmd == "evaluate")
 
         objScanner = Scanner(src_str)
         lToken : list[Token] = objScanner.scanTokens()
@@ -60,9 +61,9 @@ class Lox(ILox):
             for token in lToken: print(token)
             return
         
-        objParser  = Parser(lToken)
-        expression = objParser.parse()
-        # statements : Stmt = objParser.parse()
+        objParser  = Parser(lToken, bParseOnly, bEvalOnly)
+        # expression = objParser.parse()
+        statements : Stmt = objParser.parse()
         # syntax error 
         if(True == LoxParserException.hasError()): return
         # if(bHadRuntimeError) : exit(70)        
@@ -70,14 +71,13 @@ class Lox(ILox):
         if bParseOnly:
             # ASTPrinter is a visitor
             objASTPrinter = ASTPrinter()
-            #strAST = objASTPrinter.print(statements)
-            strAST = objASTPrinter.print(expression)
-            print(strAST)
+            print(objASTPrinter.print(statements[0].expression))
+            # strAST = objASTPrinter.print(expression)
             return
         # Interpreter is a visitor
-        objInterpreter = Interpreter()
-        # objInterpreter.interpret(statements)
-        objInterpreter.interpret(expression)
+        objInterpreter = Interpreter(bEvalOnly)
+        objInterpreter.interpret(statements)
+        # objInterpreter.interpret(expression)
         if(LoxRuntimeError.hasError()) : return
 
 

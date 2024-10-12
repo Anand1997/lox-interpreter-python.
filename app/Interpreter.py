@@ -16,17 +16,17 @@ from app.StmtSkeleton import Stmt
 from app.StmtSkeleton import visitorStmt as SrmtVisitor
 
 class Interpreter(ASTVisitor, SrmtVisitor):
-    def __init__(self):
-        pass
+    def __init__(self, bEvalOnly: bool):
+        self.__bEvalOnly : bool = bEvalOnly
 
-    def interpret(self, expression): #statements : list[Stmt]):
+    def interpret(self, statements : list[Stmt], ): # expression
         try:
-            # for statement in statements:
-            #     self.execute(statement)
-            if(expression is None):
-                raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
-            val = self.__evaluate(expression)
-            print(self.__stringify(val))
+            for statement in statements:
+                self.execute(statement)
+            # if(expression is None):
+            #     raise LoxRuntimeError(LoxError("Expression is wrong !!",Token(eToken.INVALID, "invalid", None, 0)))
+            # val = self.__evaluate(expression)
+            # print(self.__stringify(val))
         except (RuntimeError, LoxRuntimeError):
             LoxRuntimeError.runtimeError()
             return
@@ -39,14 +39,15 @@ class Interpreter(ASTVisitor, SrmtVisitor):
 
     # override 
     def visitExpressionStmt(self, stmt):
-        self.__evaluate(stmt.expression)
-        return None
+        value : object = self.__evaluate(stmt.expression)
+        if(self.__bEvalOnly): print(self.__stringify(value))
+        return value
     
     # override 
     def visitPrintStmt(self, stmt):
         value : object = self.__evaluate(stmt.expression)
         print(self.__stringify(value))
-        return None
+        return value
 
     def visitBinary(self, expr : Binary):
         left : object = self.__evaluate(expr.left)
