@@ -43,9 +43,12 @@ from app.StmtSkeleton import *
 
 class Parser:
 
-    def __init__(self, lTokens : list[Token]) -> None:
+    def __init__(self, lTokens : list[Token], bParseOnly : bool, bEvalOnly : bool) -> None:
         self.__nCurrent : int = 0
         self.__lTokens : list[Token] = lTokens
+        self.__bParseOnly : bool = bParseOnly
+        self.__bEvalOnly : bool = bEvalOnly
+        
 
     def statement(self) -> Stmt:
         if(self.__match(eToken.PRINT)) : return self.__printStatement()
@@ -54,12 +57,12 @@ class Parser:
     def __printStatement(self):
         value : Expr = self.expression()
         self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
-        return PrintStmt(value)
+        return PrintStmt(value) # value 
 
     def __expressionStatement(self):
         value : Expr = self.expression()
-        # # self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
-        return Expression(value)
+        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        return Expression(value) #value
 
     
     def expression(self):
@@ -143,13 +146,14 @@ class Parser:
 
 
 # MAIN API 
-    def parse(self):
+    def parse(self) -> list[Stmt]:
         try:
+            if(self.__bParseOnly or self.__bEvalOnly):
+                return [self.statement()]
             statements : list[Stmt] = []
             while(not self.__isAtEnd()):
                 statements.append(self.statement())
             return statements
-            # return self.statement()
         except (ValueError, LoxParserException):
             print(">> Error in Parsing", file=stderr)
             return None
@@ -182,4 +186,5 @@ class Parser:
 
     def __consume(self, eType : eToken, message : str) -> Token:
         if self.__check(eType) : return self.__advance()
+        if (self.__bEvalOnly or self.__bParseOnly) : return
         self.error(self.__peek(),message)
