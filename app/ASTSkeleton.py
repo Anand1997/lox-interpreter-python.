@@ -25,6 +25,12 @@ class visitor(metaclass=ABCMeta):
     def visitUnary(self, element):
         raise NotImplemented('ERROR : Not implimented !')
 
+    def visitVariable(self, element):
+        raise NotImplemented('ERROR : Not implimented !')
+    
+    def visitAssign(self, element):
+        raise NotImplemented('ERROR : Not implimented !')
+
 # Class Binary   - left : Expr, operator : Token, right : Expr
 class Binary(Expr):
     def __init__( self, left : Expr, operator : Token, right : Expr ) -> None:
@@ -62,6 +68,24 @@ class Unary(Expr):
 
     def accept(self, visitor):
         return visitor.visitUnary(self)
+ 
+ 
+# Class Variable - name : Token
+class Variable(Expr):
+    def __init__( self, name : Token ) -> None:
+       self.name = name
+
+    def accept(self, visitor):
+        return visitor.visitVariable(self)
+    
+# Class Assign - name : Token, value : obj
+class Assign(Expr):
+    def __init__(self, name : Token, value : object) -> None:
+        self.name = name
+        self.value = value
+    
+    def accept(self, visitor):
+        return visitor.visitAssign(self)
  
  
 # END OF FILE

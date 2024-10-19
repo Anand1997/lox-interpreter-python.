@@ -85,15 +85,16 @@ def main():
         "Binary   - left : Expr, operator : Token, right : Expr",
         "Grouping - expression : Expr",
         "Literal  - value : object",
-        "Unary    - operator : Token, right : Expr"
+        "Unary    - operator : Token, right : Expr",
+        "Variable - name : Token"
     ])
 
-    file_path_stmt = path / "StmtSkeleton.py"
-    file_path_stmt.touch()
-    defineASTSkeleton(file_path_stmt,"Stmt",[
-        "Expression - expression : Expr",
-        "Print      - expression : Expr"
-    ])
+    # file_path_stmt = path / "StmtSkeleton.py"
+    # file_path_stmt.touch()
+    # defineASTSkeleton(file_path_stmt,"Stmt",[
+    #     "Expression - expression : Expr",
+    #     "Print      - expression : Expr"
+    # ])
 
     # TODO : Automate the creation of the visitor implementation
 

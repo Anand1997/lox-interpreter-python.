@@ -31,4 +31,10 @@ class ASTPrinter(visitor):
 
     def visitUnary(self, element : Unary):
         return self.parenthesize(element.operator.sLexeme, element.right)
+    
+    def visitVariable(self, element):
+        return str(element.name)
+    
+    def visitAssign(self, element):
+        print("error in visitAssign")
 

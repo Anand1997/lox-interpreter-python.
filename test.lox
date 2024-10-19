@@ -1,3 +1,1 @@
-"world"!="foo"
-print !false;
-print (23 + 30 - 11) > (55 - 23) * 2;
+ "world"!="bar"

@@ -10,14 +10,16 @@
 """
 
 from app.LoxException import *
-from app.ASTSkeleton import Expr , Binary , Grouping, Literal, Unary
+from app.ASTSkeleton import Expr , Binary , Grouping, Literal, Unary, Variable, Assign
 from app.ASTSkeleton import visitor as ASTVisitor
-from app.StmtSkeleton import Stmt
+from app.StmtSkeleton import Stmt , VarStmt
 from app.StmtSkeleton import visitorStmt as SrmtVisitor
+from app.Environment import Environment
 
 class Interpreter(ASTVisitor, SrmtVisitor):
     def __init__(self, bEvalOnly: bool):
         self.__bEvalOnly : bool = bEvalOnly
+        self.__env : Environment = Environment()
 
     def interpret(self, statements : list[Stmt], ): # expression
         try:
@@ -48,6 +50,14 @@ class Interpreter(ASTVisitor, SrmtVisitor):
         value : object = self.__evaluate(stmt.expression)
         print(self.__stringify(value))
         return value
+    
+    # override 
+    def visitVarStmt(self, stmt : VarStmt):
+        value : object = None
+        if stmt.initializer is not None :
+            value = self.__evaluate(stmt.initializer)
+        self.__env.define(stmt.name.sLexeme, value)
+        return None
 
     def visitBinary(self, expr : Binary):
         left : object = self.__evaluate(expr.left)
@@ -108,6 +118,34 @@ class Interpreter(ASTVisitor, SrmtVisitor):
         # Unrechable 
         return None
     
+    # visitVarExpr
+    def visitVariable(self, expr : Variable):
+        return self.__env.get(expr.name)
+    
+    # visitAssignExpr
+    def visitAssign(self, expr : Assign):
+        value : object = self.__evaluate(expr=expr.value)
+        self.__env.assign(expr.name,value)
+        return value
+        
+        """
+        Object value = evaluate(expr.value);
+        /* Statements and State visit-assign < Resolving and Binding resolved-assign
+            environment.assign(expr.name, value);
+        */
+        //> Resolving and Binding resolved-assign
+
+            Integer distance = locals.get(expr);
+            if (distance != null) {
+            environment.assignAt(distance, expr.name, value);
+            } else {
+            globals.assign(expr.name, value);
+            }
+
+        //< Resolving and Binding resolved-assign
+            return value;
+        """
+
     def __isTruthy(self,obj : object):
         if obj is None : return False
         if isinstance(obj , bool) : return bool(obj)

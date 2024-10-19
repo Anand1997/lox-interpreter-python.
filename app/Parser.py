@@ -21,7 +21,8 @@ factor         → unary ( ( "/" | "*" ) unary )* ;
 unary          → ( "!" | "-" ) unary
                | primary ;
 primary        → NUMBER | STRING | "true" | "false" | "nil"
-               | "(" expression ")" ;
+               | "(" expression ")" 
+               | IDENTIFIER ;
 =========================================================================
 
 Operator Precidence 
@@ -49,9 +50,17 @@ class Parser:
         self.__bParseOnly : bool = bParseOnly
         self.__bEvalOnly : bool = bEvalOnly
         
+    def declaration(self) -> Stmt:
+        try:
+            if(self.__match(eToken.VAR)) :  return self.__varDeclaration()
+            return self.statement()
+        except (ValueError, LoxParserException):
+            self.__sync();
+            return None
 
     def statement(self) -> Stmt:
-        if(self.__match(eToken.PRINT)) : return self.__printStatement()
+        if(self.__match(eToken.PRINT))      : return self.__printStatement()
+        # if(self.__match(eToken.LEFT_BRACE)) : return self.__blockStatement();
         return self.__expressionStatement()
     
     def __printStatement(self):
@@ -61,13 +70,23 @@ class Parser:
 
     def __expressionStatement(self):
         value : Expr = self.expression()
-        self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
+        if(self.__bParseOnly != True ) : self.__consume(eType=eToken.SEMICOLON, message="Expect ';' after value.")
         return Expression(value) #value
-
+    
+    def __varDeclaration(self) -> Stmt:
+        name : Token = self.__consume(eType=eToken.IDENTIFIER,
+                                      message="Expect variable name.")
+        initializer : Expr = None
+        if(self.__match(eToken.EQUAL)):
+            initializer = self.expression()
+        self.__consume(eType=eToken.SEMICOLON,
+                       message="Expect ';' after variable declaration.")
+        return VarStmt(name, initializer)
     
     def expression(self):
         # expression -> equality 
-        return self.equality()
+        if(self.__bParseOnly) : return self.equality()
+        else                  : return self.assignment();
 
     def equality(self):
         # equality -> comparision (("!=" | "==") comparision)*
@@ -77,6 +96,28 @@ class Parser:
             right : Expr = self.comparison()
             expr = Binary(expr , operator, right)
         return expr
+    
+    def assignment(self):
+        if(self.__bParseOnly) : return self.equality()
+        expr : Expr = self.equality() # self.or_()
+        if(self.__match(eToken.EQUAL)):
+            equals : Token = self.__previous()
+            value  : Expr  = self.assignment()
+            if(isinstance(expr, Variable)):
+                name : Token = expr.name
+                return Assign(name=equals, value=value)
+            # elif(isinstance(expr, Get)):
+            #     get : Get = expr
+            #     return Set(get.obj , get.name, value)
+            self.error(equals, "Invalid assignment target.")
+        return expr
+
+
+    def or_(self):
+        pass
+
+    def and_(slef):
+        pass
 
     def comparison(self):
         # comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )*;
@@ -132,8 +173,9 @@ class Parser:
         if self.__match(eToken.TRUE)    : return Literal(True)   # Literal('true') 
         if self.__match(eToken.VAR)     : return Literal('var')
         if self.__match(eToken.WHILE)   : return Literal('while')
-        if self.__match(eToken.NUMBER, eToken.STRING) : 
-            return Literal(self.__previous().objLiteral)
+        if self.__match(eToken.IDENTIFIER): return Variable(self.__previous())
+        if self.__match(eToken.NUMBER, 
+                        eToken.STRING) :  return Literal(self.__previous().objLiteral)
         if self.__match(eToken.LEFT_PAREN):
             expr : Expr = self.expression()
             self.__consume(eToken.RIGHT_PAREN, "Expect ')' after expression.")
@@ -149,10 +191,10 @@ class Parser:
     def parse(self) -> list[Stmt]:
         try:
             if(self.__bParseOnly or self.__bEvalOnly):
-                return [self.statement()]
+                return [self.declaration()]
             statements : list[Stmt] = []
             while(not self.__isAtEnd()):
-                statements.append(self.statement())
+                statements.append(self.declaration())
             return statements
         except (ValueError, LoxParserException):
             print(">> Error in Parsing", file=stderr)
@@ -186,5 +228,21 @@ class Parser:
 
     def __consume(self, eType : eToken, message : str) -> Token:
         if self.__check(eType) : return self.__advance()
-        if (self.__bEvalOnly or self.__bParseOnly) : return
+        if (self.__bEvalOnly) : return
         self.error(self.__peek(),message)
+
+    def  __sync(self):
+        self.__advance()
+        while(not self.__isAtEnd()):
+            if (self.__previous().eType == eToken.SEMICOLON) : return
+            nextToken : eToken = self.__peek().eType
+            if nextToken == eToken.CLASS : pass
+            if nextToken == eToken.FUN   : pass
+            if nextToken == eToken.VAR   : pass
+            if nextToken == eToken.FOR   : pass
+            if nextToken == eToken.IF    : pass
+            if nextToken == eToken.WHILE : pass
+            if nextToken == eToken.PRINT : pass
+            if nextToken == eToken.RETURN : 
+                return
+            self.__advance()

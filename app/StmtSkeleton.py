@@ -19,13 +19,17 @@ class visitorStmt(metaclass=ABCMeta):
 
     def visitPrintStmt(self, stmt):
         raise NotImplemented('ERROR : Not implimented !')
+    
+    def visitVarStmt(self, stmt):
+        raise NotImplemented('ERROR : Not implimented !')
+
 
 # Class Expression - expression : Stmt
 class Expression(Stmt):
     def __init__( self, expression : Expr ) -> None:
        self.expression = expression
 
-    def accept(self, visitor):
+    def accept(self, visitor : visitorStmt):
         return visitor.visitExpressionStmt(self)
  
  
@@ -34,8 +38,17 @@ class PrintStmt(Stmt):
     def __init__( self, expression : Expr ) -> None:
        self.expression = expression
 
-    def accept(self, visitor):
+    def accept(self, visitor : visitorStmt):
         return visitor.visitPrintStmt(self)
- 
- 
+
+
+class VarStmt(Stmt):
+    def __init__(self, name : Token, initializer : Expr ) -> None:
+       self.name       = name
+       self.initializer = initializer
+    
+    def accept(self, visitor : visitorStmt):
+        return visitor.visitVarStmt(self)
+
+
 # END OF FILE

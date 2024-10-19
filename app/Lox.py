@@ -60,7 +60,7 @@ class Lox(ILox):
         if bScannOnly :
             for token in lToken: print(token)
             return
-        
+        if(True == LoxParserException.hasError()): return
         objParser  = Parser(lToken, bParseOnly, bEvalOnly)
         # expression = objParser.parse()
         statements : Stmt = objParser.parse()
