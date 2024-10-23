@@ -60,8 +60,17 @@ class Parser:
 
     def statement(self) -> Stmt:
         if(self.__match(eToken.PRINT))      : return self.__printStatement()
-        # if(self.__match(eToken.LEFT_BRACE)) : return self.__blockStatement();
+        if(self.__match(eToken.LEFT_BRACE)) : return Block(self.block())
         return self.__expressionStatement()
+    
+    def block(self) -> list[Stmt]:
+        statements : list[Stmt] = []
+        while((not self.__check(eType=eToken.RIGHT_BRACE)) and 
+              (not self.__isAtEnd())):
+            statements.append(self.declaration())
+        self.__consume(eType=eToken.RIGHT_BRACE, message="Expect '}' after block.")
+        return statements
+
     
     def __printStatement(self):
         value : Expr = self.expression()

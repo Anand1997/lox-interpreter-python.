@@ -38,6 +38,22 @@ class Interpreter(ASTVisitor, SrmtVisitor):
     
     def execute(self, stmt : Stmt):
         return stmt.accept(self)
+    
+
+    def executeBlock(self, statements : list[Stmt], env : Environment):
+        previous : Environment = self.__env
+        try:
+            self.__env = env
+            for statement in statements:
+                self.execute(stmt=statement)
+        except():
+            self.__env = previous
+
+
+    # override 
+    def visitBlockStmt(self, stmt):
+        self.executeBlock(stmt.statements, Environment(self.__env))
+        return None
 
     # override 
     def visitExpressionStmt(self, stmt):

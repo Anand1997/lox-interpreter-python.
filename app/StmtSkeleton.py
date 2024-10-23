@@ -22,7 +22,17 @@ class visitorStmt(metaclass=ABCMeta):
     
     def visitVarStmt(self, stmt):
         raise NotImplemented('ERROR : Not implimented !')
+    
+    def visitBlockStmt(self, stmt):
+        raise NotImplemented('ERROR : Not implimented !')
 
+# Class Block - statements : list[Stmt]
+class Block(Stmt):
+    def __init__(self, statements : list[Stmt]):
+        self.statements = statements
+    
+    def accept(self, visitor):
+        return visitor.visitBlockStmt(self)
 
 # Class Expression - expression : Stmt
 class Expression(Stmt):
