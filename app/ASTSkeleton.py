@@ -31,6 +31,16 @@ class visitor(metaclass=ABCMeta):
     def visitAssign(self, element):
         raise NotImplemented('ERROR : Not implimented !')
 
+# Class Assign   - name : Token , value : Expr
+class Assign(Expr):
+    def __init__(self, name : Token, value : Expr):
+        self.name = name
+        self.value = value
+
+    def accept(self, visitor):
+        return visitor.visitAssign(self)
+
+
 # Class Binary   - left : Expr, operator : Token, right : Expr
 class Binary(Expr):
     def __init__( self, left : Expr, operator : Token, right : Expr ) -> None:

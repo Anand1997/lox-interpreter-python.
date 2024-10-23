@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "app.main",
             "console": "integratedTerminal",
-            "args": ["parse", "test.lox"],
+            "args": ["run", "test.lox"],
             "cwd": "${workspaceFolder}"
         }
     ]

@@ -22,7 +22,7 @@ class Environment():
                                        token=name))
     
     def assign( self ,name : Token, value : object):
-        if(name.sLexeme in value):
+        if(name.sLexeme in self._values):
             self._values[name.sLexeme] = value
             return
         

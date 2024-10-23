@@ -97,15 +97,16 @@ class Parser:
             expr = Binary(expr , operator, right)
         return expr
     
+
     def assignment(self):
         if(self.__bParseOnly) : return self.equality()
-        expr : Expr = self.equality() # self.or_()
+        expr : Expr = self.or_() # self.equality()
         if(self.__match(eToken.EQUAL)):
             equals : Token = self.__previous()
             value  : Expr  = self.assignment()
             if(isinstance(expr, Variable)):
                 name : Token = expr.name
-                return Assign(name=equals, value=value)
+                return Assign(name=name, value=value)
             # elif(isinstance(expr, Get)):
             #     get : Get = expr
             #     return Set(get.obj , get.name, value)
@@ -114,9 +115,29 @@ class Parser:
 
 
     def or_(self):
+        return self.equality()
         pass
+        # expr : Expr = self.and_()
+        # while(self.__match(eToken.OR)):
+        #     operator : Token = self.__previous()
+        #     right : Expr = self.and_()
+        #     expr = self.logical(expr, operator, right)
+        # return expr
 
-    def and_(slef):
+    def and_(self):
+        """
+        //< Control Flow or
+        //> Control Flow and
+        private Expr and() {
+            Expr expr = equality();
+            while (match(AND)) {
+                Token operator = previous();
+                Expr right = equality();
+                expr = new Expr.Logical(expr, operator, right);
+        }
+        return expr;
+        }
+        """
         pass
 
     def comparison(self):
